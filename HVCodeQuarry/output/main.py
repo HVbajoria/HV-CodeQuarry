@@ -20,7 +20,7 @@ import subprocess
 def run_command():
     command = [
         "pf", "connection", "create",
-        "--file", "/mount/src/HVCodeQuarry/output/flow/azure_openai.yaml",
+        "--file", "/mount/src/hv-codequarry/HVCodeQuarry/output/flow/azure_openai.yaml",
         "--set", "api_key=8946fd734a33456a9edf88ed33211d21",
         "api_base=https://hvcodequarry.openai.azure.com/",
         "--name", "azure_open_ai"
@@ -249,7 +249,7 @@ def start():
         return buffer
     
     # Read the .txt file, format the content, and save it as a .docx file
-    with open("/mount/src/hv_enigma/output/hvenigma.txt", "r") as file:
+    with open("/mount/src/hv-codequarry/HVCodeQuarry/output/hvcode.txt", "r") as file:
         file_content = file.read()
         file_content = file_content.replace("\\n", "\n").replace("\\t", "\t")
         file_content = file_content.replace("\\\"", "\"").replace("\\'", "'")
@@ -270,7 +270,7 @@ def start():
         st.download_button(
         label="Download Output",
         data=docx_buffer,
-        file_name="hvenigma.docx",
+        file_name="hvcode.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 
