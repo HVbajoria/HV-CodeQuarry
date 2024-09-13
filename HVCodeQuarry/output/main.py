@@ -15,6 +15,7 @@ from promptflow._sdk._orchestrator.utils import resolve_generator, resolve_gener
 from promptflow._utils.flow_utils import dump_flow_result
 from promptflow._utils.multimedia_utils import BasicMultimediaProcessor
 from promptflow.client import load_flow
+import subprocess
 
 def run_command():
     command = [
