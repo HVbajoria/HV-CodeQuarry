@@ -16,7 +16,7 @@ inputs:
   Solution:
     type: string
     default: SELECT tweet_id FROM Tweets WHERE CHAR_LENGTH(content) > 15
-  "Difficulty ":
+  Difficulty:
     type: string
     default: Easy
   Input_Testcas:
