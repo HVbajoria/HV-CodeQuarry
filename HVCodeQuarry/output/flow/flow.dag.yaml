@@ -42,7 +42,7 @@ nodes:
     path: question_gen.jinja2
   inputs:
     question: ${inputs.Problem_Statement}
-    difficulty: ${inputs.Difficulty }
+    difficulty: ${inputs.Difficulty}
     input_testcase: ${inputs.Input_Testcas}
     output_testcase: ${inputs.Output_Testcase}
 - name: question
