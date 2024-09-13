@@ -1,0 +1,181 @@
+{
+  "package": {},
+  "code": {
+    "chat.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "chat_history": {
+          "type": [
+            "string"
+          ]
+        },
+        "question": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "chat.jinja2"
+    },
+    "question_gen.jinja2": {
+      "type": "prompt",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "difficulty": {
+          "type": [
+            "string"
+          ]
+        },
+        "input_testcase": {
+          "type": [
+            "string"
+          ]
+        },
+        "output_testcase": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "question_gen.jinja2"
+    },
+    "question.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "questions": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "question.jinja2"
+    },
+    "sample_testcase_gen.jinja2": {
+      "type": "prompt",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "sample_testcase_gen.jinja2"
+    },
+    "sample_testcase.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "questions": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "sample_testcase.jinja2"
+    },
+    "solution_gen.jinja2": {
+      "type": "prompt",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "sample_testcase": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "solution_gen.jinja2"
+    },
+    "solution.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "questions": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "solution.jinja2"
+    },
+    "testcase_gen.jinja2": {
+      "type": "prompt",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "solution": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "testcase_gen.jinja2"
+    },
+    "testcase.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "question": {
+          "type": [
+            "string"
+          ]
+        },
+        "solution": {
+          "type": [
+            "string"
+          ]
+        },
+        "questions": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "testcase.jinja2"
+    },
+    "final_res.py": {
+      "type": "python",
+      "inputs": {
+        "input1": {
+          "type": [
+            "string"
+          ]
+        },
+        "input2": {
+          "type": [
+            "string"
+          ]
+        },
+        "input3": {
+          "type": [
+            "string"
+          ]
+        },
+        "input4": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "final_res.py",
+      "function": "my_python_tool"
+    }
+  }
+}

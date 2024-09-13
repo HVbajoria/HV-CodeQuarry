@@ -1,0 +1,137 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Flow.schema.json
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  chat_history:
+    type: list
+    is_chat_history: true
+    default: []
+  Problem_Statement:
+    type: string
+    is_chat_input: true
+    default: Write a solution to find the IDs of the invalid tweets. The tweet is
+      invalid if the number of characters used in the content of the tweet is
+      strictly greater than 15. Return the result sorted in ascending order by
+      id
+  Solution:
+    type: string
+    default: SELECT tweet_id FROM Tweets WHERE CHAR_LENGTH(content) > 15
+  "Difficulty ":
+    type: string
+    default: Easy
+  Input_Testcas:
+    type: string
+    default: "Tweets table: +----------+----------------------------------+ |
+      tweet_id | content                          |
+      +----------+----------------------------------+ | 1        | Vote for
+      Biden                   | | 2        | Let us make America great again! |
+      +----------+----------------------------------+"
+  Output_Testcase:
+    type: string
+    default: +----------+ | tweet_id | +----------+ | 2        | +----------+
+outputs:
+  answer:
+    type: string
+    reference: ${final_res.output}
+    is_chat_output: true
+nodes:
+- name: question_gen
+  type: prompt
+  source:
+    type: code
+    path: question_gen.jinja2
+  inputs:
+    question: ${inputs.Problem_Statement}
+    difficulty: ${inputs.Difficulty }
+    input_testcase: ${inputs.Input_Testcas}
+    output_testcase: ${inputs.Output_Testcase}
+- name: question
+  type: llm
+  source:
+    type: code
+    path: question.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.8
+    response_format:
+      type: text
+    question: ${inputs.Problem_Statement}
+    questions: ${question_gen.output}
+  connection: azure_open_ai
+  api: chat
+- name: sample_testcase_gen
+  type: prompt
+  source:
+    type: code
+    path: sample_testcase_gen.jinja2
+  inputs:
+    question: ${question.output}
+- name: sample_testcase
+  type: llm
+  source:
+    type: code
+    path: sample_testcase.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.6
+    response_format:
+      type: text
+    question: ${question.output}
+    questions: ${sample_testcase_gen.output}
+  connection: azure_open_ai
+  api: chat
+- name: solution_gen
+  type: prompt
+  source:
+    type: code
+    path: solution_gen.jinja2
+  inputs:
+    question: ${question.output}
+    sample_testcase: ${sample_testcase.output}
+- name: solution
+  type: llm
+  source:
+    type: code
+    path: solution.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.5
+    response_format:
+      type: text
+    question: ${question.output}
+    questions: ${solution_gen.output}
+  connection: azure_open_ai
+  api: chat
+- name: testcase_gen
+  type: prompt
+  source:
+    type: code
+    path: testcase_gen.jinja2
+  inputs:
+    question: ${question.output}
+    solution: ${solution.output}
+- name: testcase
+  type: llm
+  source:
+    type: code
+    path: testcase.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.7
+    response_format:
+      type: text
+    question: ${question.output}
+    solution: ${solution.output}
+    questions: ${testcase_gen.output}
+  connection: azure_open_ai
+  api: chat
+- name: final_res
+  type: python
+  source:
+    type: code
+    path: final_res.py
+  inputs:
+    input1: ${question.output}
+    input2: ${sample_testcase.output}
+    input3: ${solution.output}
+    input4: ${testcase.output}

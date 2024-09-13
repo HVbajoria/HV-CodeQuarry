@@ -1,0 +1,31 @@
+{
+    "flow_name": "HVCodeQuarry",
+    "flow_inputs": {
+        "Problem_Statement": [
+            "Write a solution to find the IDs of the invalid tweets. The tweet is invalid if the number of characters used in the content of the tweet is strictly greater than 15. Return the result sorted in ascending order by id",
+            "string"
+        ],
+        "Solution": [
+            "SELECT tweet_id FROM Tweets WHERE CHAR_LENGTH(content) > 15",
+            "string"
+        ],
+        "Difficulty ": [
+            "Easy",
+            "string"
+        ],
+        "Input_Testcas": [
+            "Tweets table: +----------+----------------------------------+ | tweet_id | content                          | +----------+----------------------------------+ | 1        | Vote for Biden                   | | 2        | Let us make America great again! | +----------+----------------------------------+",
+            "string"
+        ],
+        "Output_Testcase": [
+            "+----------+ | tweet_id | +----------+ | 2        | +----------+",
+            "string"
+        ]
+    },
+    "flow_path": "/workspaces/HV-CodeQuarry/HVCodeQuarry/output/flow/flow.dag.yaml",
+    "is_chat_flow": true,
+    "chat_history_input_name": "chat_history",
+    "label": "Chat",
+    "chat_output_name": "answer",
+    "is_streaming": true
+}
