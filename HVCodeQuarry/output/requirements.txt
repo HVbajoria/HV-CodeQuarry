@@ -37,3 +37,13 @@ streamlit
 streamlit-quill
 bs4
 argcomplete
+streamlit
+pyinstaller
+promptflow
+promptflow-core
+promptflow-tools
+promptflow-devkit 
+promptflow-tracing 
+promptflow-azure
+keyrings.alt
+python-docx
