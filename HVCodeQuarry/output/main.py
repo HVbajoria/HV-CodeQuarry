@@ -16,6 +16,30 @@ from promptflow._utils.flow_utils import dump_flow_result
 from promptflow._utils.multimedia_utils import BasicMultimediaProcessor
 from promptflow.client import load_flow
 
+def run_command():
+    command = [
+        "pf", "connection", "create",
+        "--file", "/mount/src/HVCodeQuarry/output/flow/azure_openai.yaml",
+        "--set", "api_key=8946fd734a33456a9edf88ed33211d21",
+        "api_base=https://hvcodequarry.openai.azure.com/",
+        "--name", "azure_open_ai"
+    ]
+    try:
+        subprocess.run(command, check=True)
+    except FileNotFoundError:
+        st.error("The command 'pf' was not found. Please ensure it is installed and in your PATH.")
+    except subprocess.CalledProcessError as e:
+        st.error(f"An error occurred while running the command: {e}")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+
+def format_markdown(content):
+    # Replace newlines with double newlines for markdown formatting
+    content = content.replace("\\n", "\n\n")
+    # Replace escaped characters
+    content = content.replace("\\", "")
+    return content
+
 
 def start():
     def clear_chat() -> None:
@@ -115,20 +139,42 @@ def start():
     image = Image.open(Path(__file__).parent / "logo.png")
     st.set_page_config(
         layout="wide",
-        page_title=f"{flow_name} - Promptflow App",
+        page_title=f"HV Code Quarry",
         page_icon=image,
         menu_items={
             "About": """
-            # This is a Promptflow App.
+            # This is a SQL creator application.
 
-            You can refer to [promptflow](https://github.com/microsoft/promptflow) for more information.
+            This has been created by [Harshavardhan Bajoria](https://www.linkedin.com/in/harshavardhan-bajoria).
             """
         },
     )
+    run_command()
+    st.markdown(footer, unsafe_allow_html=True)
     # Set primary button color here since button color of the same form need to be identical in streamlit, but we only
     # need Run/Chat button to be blue.
     st.config.set_option("theme.primaryColor", "#0F6CBD")
-    st.title(flow_name)
+    def gradient_text(text, color1, color2):
+        gradient_css = f"""
+        background: -webkit-linear-gradient(left, {color1}, {color2});
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: bold;
+        font-size: 42px;
+        """
+        return f'<span style="{gradient_css}">{text}</span>'
+
+    color1 = "#0d3270"
+    color2 = "#0fab7b"
+    text = "HV Code Quarry"
+  
+    left_co, cent_co, last_co = st.columns(3)
+    with cent_co:
+        st.image(str(Path(__file__).parent / "images/logo.png"), width=240)
+
+    styled_text = gradient_text(text, color1, color2)
+    st.write(f"<div style='text-align: center;'>{styled_text}</div>", unsafe_allow_html=True)
+
     st.divider()
     st.chat_message("assistant").write("Hello, please input following flow inputs.")
     container = st.container()
@@ -142,12 +188,7 @@ def start():
                 json_data = json.load(file)
             environment_variables = list(json_data.keys())
             for environment_variable in environment_variables:
-                secret_input = st.sidebar.text_input(
-                    label=environment_variable,
-                    type="password",
-                    placeholder=f"Please input {environment_variable} here. "
-                    f"If you input before, you can leave it blank.",
-                )
+                secret_input= secret_input=st.secrets["open_ai"]
                 if secret_input != "":
                     os.environ[environment_variable] = secret_input
 
@@ -194,6 +235,43 @@ def start():
             with st.spinner("Cleaning..."):
                 clear_chat()
                 st.rerun()
+    from docx import Document
+    from io import BytesIO
+    
+    # Function to create a .docx file from text content
+    def create_docx(content):
+        doc = Document()
+        doc.add_paragraph(content)
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+        return buffer
+    
+    # Read the .txt file, format the content, and save it as a .docx file
+    with open("/mount/src/hv_enigma/output/hvenigma.txt", "r") as file:
+        file_content = file.read()
+        file_content = file_content.replace("\\n", "\n").replace("\\t", "\t")
+        file_content = file_content.replace("\\\"", "\"").replace("\\'", "'")
+        # display the content in markdown format in the streamlit app as assisstant response
+        file_content = format_markdown(file_content)
+        st.markdown(file_content)
+
+        # remove extra spaces from the markdown content
+        file_content = file_content.replace("### ", "###")
+        file_content = file_content.replace("#### ", "####")
+        file_content = file_content.replace("## ", "##")
+        file_content = file_content.replace("# ", "#")
+    
+        # create a .docx file from the content
+        docx_buffer = create_docx(file_content)
+    
+    # Provide a download button for the .docx file
+        st.download_button(
+        label="Download Output",
+        data=docx_buffer,
+        file_name="hvenigma.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
 
 
 def resolve_flow_path(_from_config):
@@ -220,4 +298,27 @@ if __name__ == "__main__":
         is_streaming = config["is_streaming"]
         chat_output_name = config["chat_output_name"]
 
+        footer = """
+        <style>
+        a:hover, a:active {
+            color: red;
+            background-color: transparent;
+            text-decoration: underline;
+        }
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: white;
+            color: black;
+            text-align: center;
+        }
+        </style>
+        <div class="footer">
+            <p>Developed with ❤️ for <a style='display: inline; text-align: center;' href="https://www.unstop.com" target="_blank">Unstoppables</a></p>
+        </div>
+        """
+
     start()
+    st.markdown(footer, unsafe_allow_html=True)
