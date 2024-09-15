@@ -55,7 +55,6 @@ nodes:
     temperature: 0.8
     response_format:
       type: text
-    question: ${inputs.Problem_Statement}
     questions: ${question_gen.output}
   connection: azure_open_ai
   api: chat
